@@ -15,12 +15,7 @@ def carregar_modelo():
     return joblib.load("modelo_potencia_ia_deploy.joblib")
 
 
-try:
-    pacote = carregar_modelo()
-except Exception as erro:
-    st.error(f"Não foi possível carregar o modelo: {erro}")
-    st.stop()
-
+pacote = carregar_modelo()
 
 modelo = pacote["modelo"]
 scaler = pacote["scaler"]
@@ -42,7 +37,7 @@ def numero_br(valor, casas=2):
     return texto.replace(",", "X").replace(".", ",").replace("X", ".")
 
 
-st.markdown("""
+st.html("""
 <style>
 
 .stApp {
@@ -52,45 +47,53 @@ st.markdown("""
 
 .block-container {
     max-width: 1080px;
-    padding-top: 1.4rem;
+    padding-top: 1.2rem;
     padding-bottom: 4rem;
 }
 
 header[data-testid="stHeader"] {
-    background: #ffffff;
+    background: rgba(255,255,255,0.96);
 }
 
-[data-testid="stToolbar"] {
-    right: 1rem;
+/* CABEÇALHO */
+
+.cabecalho {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
 }
 
-.app-header {
+.marca {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #e7edf5;
-    margin-bottom: 22px;
-}
-
-.app-logo {
-    color: #1677ff;
-    font-size: 1.65rem;
-}
-
-.app-name {
     color: #0f172a;
-    font-size: 1rem;
+    font-size: 1.05rem;
     font-weight: 700;
 }
 
+.marca-icone {
+    font-size: 1.6rem;
+    color: #1677ff;
+}
+
+.linha-cabecalho {
+    height: 1px;
+    background: #e5eaf1;
+    margin-top: 10px;
+    margin-bottom: 26px;
+}
+
+
+/* TÍTULOS */
+
 .hero-title {
-    font-size: 2.35rem;
+    color: #0f172a;
+    font-size: 2.25rem;
     font-weight: 750;
     letter-spacing: -0.035em;
     text-align: center;
-    color: #0f172a;
-    margin-top: 28px;
+    margin-top: 24px;
 }
 
 .hero-subtitle {
@@ -98,41 +101,134 @@ header[data-testid="stHeader"] {
     margin: 8px auto 32px auto;
     text-align: center;
     color: #64748b;
-    font-size: 1rem;
-    line-height: 1.6;
+    font-size: 0.98rem;
+    line-height: 1.55;
 }
 
 .section-title {
     color: #0f172a;
-    font-size: 1.3rem;
+    font-size: 1.25rem;
     font-weight: 700;
+    margin-top: 24px;
     margin-bottom: 3px;
 }
 
-.section-text {
+.section-description {
     color: #64748b;
-    font-size: 0.92rem;
-    margin-bottom: 18px;
+    font-size: 0.9rem;
+    margin-bottom: 16px;
 }
+
+
+/* FORM */
 
 div[data-testid="stForm"] {
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 16px;
     padding: 28px;
-    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.025);
+    box-shadow: 0 2px 8px rgba(15,23,42,0.03);
 }
 
-div[data-testid="stVerticalBlockBorderWrapper"] {
-    border-color: #e2e8f0;
-    border-radius: 16px;
+.stButton > button,
+.stFormSubmitButton > button {
+    background: #1677ff;
+    color: white;
+    border: none;
+    border-radius: 9px;
+    min-height: 46px;
+    font-weight: 600;
 }
+
+.stButton > button:hover,
+.stFormSubmitButton > button:hover {
+    background: #0868df;
+    color: white;
+    border: none;
+}
+
+
+/* RESULTADO PRINCIPAL */
+
+.resultado-card {
+    background: #f7faff;
+    border: 1px solid #a8ceff;
+    border-radius: 16px;
+    padding: 32px 24px;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 18px;
+}
+
+.resultado-label {
+    color: #64748b;
+    font-size: 0.82rem;
+    font-weight: 650;
+    letter-spacing: 0.035em;
+}
+
+.resultado-numero {
+    color: #0f172a;
+    font-size: 3.35rem;
+    line-height: 1.05;
+    font-weight: 780;
+    letter-spacing: -0.045em;
+    margin-top: 8px;
+}
+
+.resultado-kw {
+    color: #64748b;
+    font-size: 1.45rem;
+    margin-top: 7px;
+}
+
+.resultado-contexto {
+    color: #64748b;
+    font-size: 0.82rem;
+    margin-top: 8px;
+}
+
+
+/* ÍCONES */
+
+.ajuda-icones {
+    text-align: center;
+    color: #64748b;
+    font-size: 0.86rem;
+    margin: 12px 0 8px 0;
+}
+
+div[data-testid="stPopover"] > button {
+    min-height: 58px !important;
+    height: 58px !important;
+    background: #ffffff !important;
+    border: 1px solid #d7e0eb !important;
+    border-radius: 11px !important;
+    box-shadow: none !important;
+    color: #1e3a5f !important;
+    font-size: 0.94rem !important;
+    font-weight: 600 !important;
+    padding: 0 12px !important;
+}
+
+div[data-testid="stPopover"] > button:hover {
+    background: #f5f9ff !important;
+    border-color: #1677ff !important;
+}
+
+div[data-testid="stPopover"] svg {
+    width: 15px !important;
+    height: 15px !important;
+}
+
+
+/* MÉTRICAS */
 
 div[data-testid="stMetric"] {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 14px;
-    padding: 20px;
+    border-radius: 13px;
+    padding: 18px;
 }
 
 div[data-testid="stMetricLabel"] {
@@ -143,156 +239,83 @@ div[data-testid="stMetricValue"] {
     color: #0f172a;
 }
 
-.stButton > button,
-.stFormSubmitButton > button {
-    background: #1677ff;
-    color: #ffffff;
-    border: 0;
-    border-radius: 10px;
-    min-height: 48px;
-    font-weight: 650;
-    transition: 0.15s ease;
-}
 
-.stButton > button:hover,
-.stFormSubmitButton > button:hover {
-    background: #0868df;
-    color: #ffffff;
-    border: 0;
-}
+/* AVISO */
 
-div[data-testid="stPopover"] > button {
-    background: #ffffff;
-    border: 1px solid #d8e1ec;
-    border-radius: 14px;
-    min-height: 76px;
-    font-size: 1.65rem;
-    color: #1677ff;
-}
-
-div[data-testid="stPopover"] > button:hover {
+.info-box {
     background: #f7faff;
-    border-color: #1677ff;
-    color: #1677ff;
-}
-
-.result-card {
-    background: #f7faff;
-    border: 1px solid #b9d6ff;
-    border-radius: 18px;
-    padding: 34px 20px;
-    text-align: center;
-    margin: 20px 0 16px 0;
-}
-
-.result-label {
-    color: #475569;
-    font-size: 0.9rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-}
-
-.result-value {
-    color: #0f172a;
-    font-size: 3.5rem;
-    font-weight: 780;
-    letter-spacing: -0.04em;
-    line-height: 1.1;
-    margin-top: 8px;
-}
-
-.result-kw {
-    color: #64748b;
-    font-size: 1.55rem;
-    margin-top: 6px;
-}
-
-.result-context {
-    color: #64748b;
-    font-size: 0.9rem;
-    margin-top: 9px;
-}
-
-.icon-help {
-    text-align: center;
-    color: #64748b;
-    font-size: 0.87rem;
-    margin: 18px 0 9px 0;
-}
-
-.friendly-box {
-    background: #f8fbff;
     border-left: 4px solid #1677ff;
     border-radius: 8px;
-    padding: 16px 18px;
+    padding: 15px 18px;
     color: #475569;
-    margin-top: 18px;
+    font-size: 0.9rem;
     line-height: 1.55;
+    margin-top: 18px;
 }
+
+
+/* RODAPÉ */
 
 .footer {
     text-align: center;
     color: #94a3b8;
-    font-size: 0.8rem;
-    margin-top: 50px;
+    font-size: 0.78rem;
+    margin-top: 42px;
 }
 
 </style>
-""", unsafe_allow_html=True)
+""")
 
 
-header_col, nav_col = st.columns([1.8, 1.2])
+# CABEÇALHO
 
-with header_col:
-    st.markdown("""
-    <div class="app-header">
-        <span class="app-logo">⚡</span>
-        <span class="app-name">Previsão de Potência em IA</span>
+cab1, cab2 = st.columns([1.8, 1.2], vertical_alignment="center")
+
+with cab1:
+    st.html("""
+    <div class="cabecalho">
+        <div class="marca">
+            <span class="marca-icone">⚡</span>
+            <span>Previsão de Potência em Cargas de IA</span>
+        </div>
     </div>
-    """, unsafe_allow_html=True)
+    """)
 
-with nav_col:
-    try:
-        menu = st.segmented_control(
-            "Navegação",
-            ["Previsão", "Sobre", "Metodologia"],
-            default="Previsão",
-            label_visibility="collapsed"
-        )
-    except AttributeError:
-        menu = st.radio(
-            "Navegação",
-            ["Previsão", "Sobre", "Metodologia"],
-            horizontal=True,
-            label_visibility="collapsed"
-        )
+with cab2:
+    menu = st.segmented_control(
+        "Navegação",
+        ["Previsão", "Sobre", "Metodologia"],
+        default="Previsão",
+        label_visibility="collapsed"
+    )
 
+st.html('<div class="linha-cabecalho"></div>')
+
+
+# SOBRE
 
 if menu == "Sobre":
 
-    st.markdown(
-        '<div class="hero-title">Sobre o projeto</div>',
-        unsafe_allow_html=True
-    )
+    st.html('<div class="hero-title">Sobre o projeto</div>')
 
-    st.markdown("""
+    st.html("""
     <div class="hero-subtitle">
-        Uma ferramenta desenvolvida para estimar a potência consumida
+        Aplicação desenvolvida para estimar a potência consumida
         por cargas de Inteligência Artificial.
     </div>
-    """, unsafe_allow_html=True)
+    """)
 
     with st.container(border=True):
 
-        st.markdown("### Objetivo")
+        st.subheader("Objetivo")
 
         st.write(
-            "O projeto utiliza Machine Learning para estimar a potência "
-            "total consumida pelas GPUs a partir das características "
+            "Utilizar Machine Learning para estimar a potência total "
+            "consumida pelas GPUs a partir das características "
             "da carga computacional."
         )
 
-        st.markdown("### Aplicação")
+        st.subheader("Aplicação")
 
         st.write(
             "A estimativa pode auxiliar no planejamento energético, "
@@ -300,29 +323,29 @@ if menu == "Sobre":
             "relacionados à execução de cargas de IA."
         )
 
-        st.markdown("### Equipe")
+        st.subheader("Equipe")
 
         st.write("Diego e Isaque — SENAC")
 
     st.stop()
 
 
+# METODOLOGIA
+
 if menu == "Metodologia":
 
-    st.markdown(
-        '<div class="hero-title">Metodologia</div>',
-        unsafe_allow_html=True
-    )
+    st.html('<div class="hero-title">Metodologia</div>')
 
-    st.markdown("""
+    st.html("""
     <div class="hero-subtitle">
-        Resumo das etapas utilizadas para construir e avaliar o modelo.
+        Resumo das etapas utilizadas para desenvolver e validar
+        o modelo de Machine Learning.
     </div>
-    """, unsafe_allow_html=True)
+    """)
 
     with st.container(border=True):
 
-        st.markdown("### Dataset")
+        st.subheader("Dataset")
 
         st.write(
             "Foram utilizadas medições de cargas de Inteligência Artificial "
@@ -330,70 +353,67 @@ if menu == "Metodologia":
         )
 
         st.write(
-            "A base preparada para o projeto possui aproximadamente "
+            "A base preparada possui aproximadamente "
             "**1,44 milhão de registros**."
         )
 
-        st.markdown("### Modelos avaliados")
+        st.subheader("Modelos avaliados")
 
         st.write(
             "Baseline, Regressão Linear, Random Forest e Gradient Boosting."
         )
 
-        st.markdown("### Modelo selecionado")
+        st.subheader("Modelo escolhido")
 
         st.write(
             "O Random Forest apresentou o melhor desempenho geral. "
-            "Uma versão otimizada foi utilizada na aplicação web."
+            "Uma versão otimizada foi utilizada no mini deploy."
         )
 
     m1, m2, m3 = st.columns(3)
 
     m1.metric(
-        "MAE do deploy",
+        "MAE",
         f"{numero_br(metricas['MAE'])} W"
     )
 
     m2.metric(
-        "RMSE do deploy",
+        "RMSE",
         f"{numero_br(metricas['RMSE'])} W"
     )
 
     m3.metric(
-        "R² do deploy",
+        "R²",
         f"{metricas['R2']:.4f}"
     )
 
     st.stop()
 
 
+# TELA 1 — ENTRADA
+
 if st.session_state.tela == "entrada":
 
-    st.markdown(
-        '<div class="hero-title">Previsão de Potência em Cargas de IA</div>',
-        unsafe_allow_html=True
+    st.html(
+        '<div class="hero-title">'
+        'Previsão de Potência em Cargas de IA'
+        '</div>'
     )
 
-    st.markdown("""
+    st.html("""
     <div class="hero-subtitle">
         Informe as características da carga computacional.
         O modelo utilizará esses parâmetros para estimar
         a potência total das GPUs.
     </div>
-    """, unsafe_allow_html=True)
+    """)
 
     with st.form("form_previsao"):
 
-        st.markdown(
-            '<div class="section-title">Configuração da carga</div>',
-            unsafe_allow_html=True
-        )
+        st.subheader("Configuração da carga")
 
-        st.markdown(
-            '<div class="section-text">'
-            'Preencha os parâmetros abaixo e clique em Calcular previsão.'
-            '</div>',
-            unsafe_allow_html=True
+        st.caption(
+            "Preencha os parâmetros abaixo e clique em Calcular previsão."
         )
 
         esquerda, direita = st.columns(2, gap="large")
@@ -412,43 +432,25 @@ if st.session_state.tela == "entrada":
 
             gpu_utilization = st.slider(
                 "Utilização média da GPU (%)",
-                min_value=float(
-                    limites["gpu_utilization_mean"]["min"]
-                ),
-                max_value=float(
-                    limites["gpu_utilization_mean"]["max"]
-                ),
-                value=float(
-                    limites["gpu_utilization_mean"]["mediana"]
-                )
+                float(limites["gpu_utilization_mean"]["min"]),
+                float(limites["gpu_utilization_mean"]["max"]),
+                float(limites["gpu_utilization_mean"]["mediana"])
             )
 
             gpu_temp = st.slider(
                 "Temperatura média da GPU (°C)",
-                min_value=float(
-                    limites["gpu_temp_mean_C"]["min"]
-                ),
-                max_value=float(
-                    limites["gpu_temp_mean_C"]["max"]
-                ),
-                value=float(
-                    limites["gpu_temp_mean_C"]["mediana"]
-                )
+                float(limites["gpu_temp_mean_C"]["min"]),
+                float(limites["gpu_temp_mean_C"]["max"]),
+                float(limites["gpu_temp_mean_C"]["mediana"])
             )
 
         with direita:
 
             gpu_mem_utilization = st.slider(
                 "Utilização da memória da GPU (%)",
-                min_value=float(
-                    limites["gpu_mem_utilization_mean"]["min"]
-                ),
-                max_value=float(
-                    limites["gpu_mem_utilization_mean"]["max"]
-                ),
-                value=float(
-                    limites["gpu_mem_utilization_mean"]["mediana"]
-                )
+                float(limites["gpu_mem_utilization_mean"]["min"]),
+                float(limites["gpu_mem_utilization_mean"]["max"]),
+                float(limites["gpu_mem_utilization_mean"]["mediana"])
             )
 
             gpu_mem_used = st.number_input(
@@ -466,15 +468,9 @@ if st.session_state.tela == "entrada":
 
             cpu_utilization = st.slider(
                 "Utilização da CPU (%)",
-                min_value=float(
-                    limites["cpu_utilization_percent"]["min"]
-                ),
-                max_value=float(
-                    limites["cpu_utilization_percent"]["max"]
-                ),
-                value=float(
-                    limites["cpu_utilization_percent"]["mediana"]
-                )
+                float(limites["cpu_utilization_percent"]["min"]),
+                float(limites["cpu_utilization_percent"]["max"]),
+                float(limites["cpu_utilization_percent"]["mediana"])
             )
 
             cpu_freq = st.number_input(
@@ -492,31 +488,28 @@ if st.session_state.tela == "entrada":
 
             batch_size = st.number_input(
                 "Batch size",
-                min_value=int(
-                    limites["batch_size"]["min"]
-                ),
-                max_value=int(
-                    limites["batch_size"]["max"]
-                ),
+                min_value=int(limites["batch_size"]["min"]),
+                max_value=int(limites["batch_size"]["max"]),
                 value=int(
                     round(limites["batch_size"]["mediana"])
                 ),
                 step=1
             )
 
-        st.markdown("---")
-        st.markdown("#### Simulação de operação")
+        st.divider()
 
-        simulacao1, simulacao2 = st.columns(2)
+        st.subheader("Simulação de operação")
 
-        horas = simulacao1.number_input(
+        sim1, sim2 = st.columns(2)
+
+        horas = sim1.number_input(
             "Horas de operação",
             min_value=1.0,
             value=1.0,
             step=1.0
         )
 
-        tarifa = simulacao2.number_input(
+        tarifa = sim2.number_input(
             "Tarifa de energia (R$/kWh)",
             min_value=0.0,
             value=0.75,
@@ -595,8 +588,11 @@ if st.session_state.tela == "entrada":
         }
 
         st.session_state.tela = "resultado"
+
         st.rerun()
 
+
+# TELA 2 — RESULTADO
 
 else:
 
@@ -610,49 +606,59 @@ else:
         st.session_state.tela = "entrada"
         st.rerun()
 
-    st.markdown(
-        '<div class="hero-title">Resultado da estimativa</div>',
-        unsafe_allow_html=True
+    st.html(
+        '<div class="hero-title">'
+        'Resultado da estimativa'
+        '</div>'
     )
 
-    st.markdown("""
+    st.html("""
     <div class="hero-subtitle">
         Resultado calculado a partir das características
         informadas para a carga de IA.
     </div>
-    """, unsafe_allow_html=True)
+    """)
 
-    resultado_html = (
-        '<div class="result-card">'
-        '<div class="result-label">POTÊNCIA TOTAL ESTIMADA DAS GPUs</div>'
-        f'<div class="result-value">{numero_br(resultado["potencia_w"])} W</div>'
-        f'<div class="result-kw">{numero_br(resultado["potencia_kw"])} kW</div>'
-        f'<div class="result-context">{resultado["gpu"]} • {resultado["workload"]}</div>'
-        '</div>'
+    st.html(
+        f"""
+        <div class="resultado-card">
+
+            <div class="resultado-label">
+                POTÊNCIA TOTAL ESTIMADA DAS GPUs
+            </div>
+
+            <div class="resultado-numero">
+                {numero_br(resultado["potencia_w"])} W
+            </div>
+
+            <div class="resultado-kw">
+                {numero_br(resultado["potencia_kw"])} kW
+            </div>
+
+            <div class="resultado-contexto">
+                {resultado["gpu"]} • {resultado["workload"]}
+            </div>
+
+        </div>
+        """
     )
 
-    st.markdown(
-        resultado_html,
-        unsafe_allow_html=True
-    )
+    st.html("""
+    <div class="ajuda-icones">
+        ⓘ Clique nos ícones para ver os parâmetros utilizados na previsão.
+    </div>
+    """)
 
-    st.markdown(
-        '<div class="icon-help">'
-        'ⓘ Clique nos ícones para ver os parâmetros utilizados na previsão.'
-        '</div>',
-        unsafe_allow_html=True
-    )
+    i1, i2, i3, i4 = st.columns(4, gap="medium")
 
-    icone1, icone2, icone3, icone4 = st.columns(4)
-
-    with icone1:
+    with i1:
 
         with st.popover(
-            "🖥️",
+            "🖥️  GPU",
             use_container_width=True
         ):
 
-            st.markdown("#### Uso da GPU")
+            st.subheader("Uso da GPU")
 
             st.metric(
                 "Utilização",
@@ -660,7 +666,7 @@ else:
             )
 
             st.write(
-                "Mostra quanto da capacidade de processamento "
+                "Indica quanto da capacidade de processamento "
                 "da GPU está sendo utilizada."
             )
 
@@ -668,14 +674,14 @@ else:
                 f'Modelo: {resultado["gpu"]}'
             )
 
-    with icone2:
+    with i2:
 
         with st.popover(
-            "▦",
+            "▰  Memória",
             use_container_width=True
         ):
 
-            st.markdown("#### Memória da GPU")
+            st.subheader("Memória da GPU")
 
             st.metric(
                 "Memória utilizada",
@@ -692,14 +698,14 @@ else:
                 f'{resultado["gpu_mem_utilization"]:.1f}%'
             )
 
-    with icone3:
+    with i3:
 
         with st.popover(
-            "⚙️",
+            "⚙️  CPU",
             use_container_width=True
         ):
 
-            st.markdown("#### CPU")
+            st.subheader("Uso da CPU")
 
             st.metric(
                 "Utilização",
@@ -707,7 +713,7 @@ else:
             )
 
             st.write(
-                "Indica quanto do processador está sendo "
+                "Mostra quanto do processador está sendo "
                 "utilizado durante a execução."
             )
 
@@ -716,14 +722,14 @@ else:
                 f'{numero_br(resultado["cpu_freq"], 0)} MHz'
             )
 
-    with icone4:
+    with i4:
 
         with st.popover(
-            "🌡️",
+            "🌡️  Temperatura",
             use_container_width=True
         ):
 
-            st.markdown("#### Temperatura da GPU")
+            st.subheader("Temperatura da GPU")
 
             st.metric(
                 "Temperatura",
@@ -731,22 +737,20 @@ else:
             )
 
             st.write(
-                "Temperatura média da GPU considerada "
-                "durante a previsão."
+                "Temperatura média considerada pelo modelo "
+                "para realizar a previsão."
             )
 
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    st.markdown(
-        '<div class="section-title">Estimativa de operação</div>',
-        unsafe_allow_html=True
+    st.html(
+        '<div class="section-title">'
+        'Estimativa de operação'
+        '</div>'
     )
 
-    st.markdown(
-        '<div class="section-text">'
+    st.html(
+        '<div class="section-description">'
         'Simulação calculada a partir da potência prevista.'
-        '</div>',
-        unsafe_allow_html=True
+        '</div>'
     )
 
     energia_col, custo_col = st.columns(2)
@@ -761,62 +765,55 @@ else:
         f'R$ {numero_br(resultado["custo"])}'
     )
 
-    st.markdown(
-        (
-            '<div class="friendly-box">'
-            'A energia e o custo são estimativas calculadas a partir '
-            'da potência prevista, considerando que essa potência '
-            f'permaneça constante durante {numero_br(resultado["horas"], 0)} '
-            'hora(s). '
-            'O modelo prevê a potência das GPUs e não o consumo elétrico '
-            'total do servidor ou do data center.'
-            '</div>'
-        ),
-        unsafe_allow_html=True
+    st.html(
+        f"""
+        <div class="info-box">
+            A energia e o custo são estimativas calculadas a partir
+            da potência prevista, considerando que essa potência
+            permaneça constante durante
+            {numero_br(resultado["horas"], 0)} hora(s).
+
+            O modelo prevê a potência das GPUs, e não o consumo
+            elétrico total do servidor ou do data center.
+        </div>
+        """
     )
 
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    st.markdown(
-        '<div class="section-title">Sobre a precisão do modelo</div>',
-        unsafe_allow_html=True
+    st.html(
+        '<div class="section-title">'
+        'Sobre a precisão do modelo'
+        '</div>'
     )
 
     st.write(
         f'O modelo utilizado no deploy apresentou **R² de '
         f'{metricas["R2"]:.4f}**. Isso significa que ele explicou '
-        f'aproximadamente **{metricas["R2"] * 100:.1f}%** da variação '
-        f'da potência no conjunto de teste.'
+        f'aproximadamente **{metricas["R2"] * 100:.1f}%** '
+        f'da variação da potência no conjunto de teste.'
     )
 
     with st.expander("Ver métricas técnicas"):
 
-        metrica1, metrica2, metrica3 = st.columns(3)
+        m1, m2, m3 = st.columns(3)
 
-        metrica1.metric(
+        m1.metric(
             "MAE",
             f'{numero_br(metricas["MAE"])} W'
         )
 
-        metrica2.metric(
+        m2.metric(
             "RMSE",
             f'{numero_br(metricas["RMSE"])} W'
         )
 
-        metrica3.metric(
+        m3.metric(
             "R²",
             f'{metricas["R2"]:.4f}'
         )
 
-        st.caption(
-            "MAE: erro absoluto médio. "
-            "RMSE: penaliza mais os erros maiores. "
-            "R²: proporção da variação da potência explicada pelo modelo."
-        )
 
-
-st.markdown("""
+st.html("""
 <div class="footer">
     Projeto Final de Machine Learning • Diego e Isaque • SENAC
 </div>
-""", unsafe_allow_html=True)
+""")
