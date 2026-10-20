@@ -3,17 +3,24 @@ import pandas as pd
 import joblib
 
 st.set_page_config(
-    page_title="Previsão de Potência em Cargas de IA",
+    page_title="Previsão de Potência em IA",
     page_icon="⚡",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
+
 @st.cache_resource
 def carregar_modelo():
     return joblib.load("modelo_potencia_ia_deploy.joblib")
 
-pacote = carregar_modelo()
+
+try:
+    pacote = carregar_modelo()
+except Exception as erro:
+    st.error(f"Não foi possível carregar o modelo: {erro}")
+    st.stop()
+
 
 modelo = pacote["modelo"]
 scaler = pacote["scaler"]
@@ -22,202 +29,12 @@ colunas_modelo = pacote["colunas_modelo"]
 limites = pacote["limites_entradas"]
 metricas = pacote["metricas"]
 
+
 if "tela" not in st.session_state:
     st.session_state.tela = "entrada"
 
 if "resultado" not in st.session_state:
     st.session_state.resultado = None
-
-st.markdown("""
-<style>
-
-.stApp {
-    background: #f7f9fc;
-    color: #172033;
-}
-
-.block-container {
-    max-width: 1120px;
-    padding-top: 1.5rem;
-    padding-bottom: 4rem;
-}
-
-header[data-testid="stHeader"] {
-    background: transparent;
-}
-
-h1, h2, h3 {
-    color: #172033;
-}
-
-.topo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding-bottom: 18px;
-    border-bottom: 1px solid #e3e8ef;
-    margin-bottom: 12px;
-}
-
-.logo {
-    font-size: 1.7rem;
-}
-
-.nome-app {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #172033;
-}
-
-.titulo {
-    text-align: center;
-    margin-top: 38px;
-    font-size: 2.3rem;
-    font-weight: 750;
-    color: #172033;
-}
-
-.subtitulo {
-    text-align: center;
-    color: #667085;
-    font-size: 1rem;
-    max-width: 720px;
-    margin: 8px auto 35px auto;
-}
-
-.card {
-    background: #ffffff;
-    border: 1px solid #e1e7ef;
-    border-radius: 16px;
-    padding: 28px;
-    box-shadow: 0 3px 12px rgba(17, 24, 39, 0.035);
-}
-
-.resultado-principal {
-    background: #ffffff;
-    border: 1px solid #b9d5ff;
-    border-radius: 18px;
-    padding: 34px;
-    text-align: center;
-    margin-top: 20px;
-}
-
-.resultado-label {
-    color: #667085;
-    font-size: 0.95rem;
-}
-
-.resultado-numero {
-    color: #172033;
-    font-size: 3.5rem;
-    line-height: 1.05;
-    font-weight: 750;
-    margin-top: 8px;
-}
-
-.resultado-kw {
-    color: #667085;
-    font-size: 1.6rem;
-    margin-top: 5px;
-}
-
-.ajuda {
-    text-align: center;
-    color: #7a8699;
-    font-size: 0.88rem;
-    margin-top: 18px;
-    margin-bottom: 10px;
-}
-
-.secao {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #172033;
-    margin-top: 30px;
-    margin-bottom: 4px;
-}
-
-.descricao {
-    color: #667085;
-    font-size: 0.94rem;
-    margin-bottom: 18px;
-}
-
-.info-box {
-    border-left: 4px solid #2583f7;
-    background: #eef6ff;
-    padding: 16px 18px;
-    border-radius: 8px;
-    color: #40516c;
-    margin-top: 18px;
-}
-
-div[data-testid="stMetric"] {
-    background: white;
-    border: 1px solid #e1e7ef;
-    border-radius: 14px;
-    padding: 18px;
-}
-
-div[data-testid="stMetricLabel"] {
-    color: #667085;
-}
-
-div[data-testid="stMetricValue"] {
-    color: #172033;
-}
-
-div[data-testid="stForm"] {
-    background: white;
-    border: 1px solid #e1e7ef;
-    border-radius: 18px;
-    padding: 28px;
-}
-
-.stButton > button,
-.stFormSubmitButton > button {
-    background: #2583f7;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    height: 48px;
-    font-weight: 600;
-}
-
-.stButton > button:hover,
-.stFormSubmitButton > button:hover {
-    background: #126fde;
-    color: white;
-    border: none;
-}
-
-div[data-testid="stPopover"] button {
-    min-height: 68px;
-    font-size: 1.7rem;
-    background: white;
-    border: 1px solid #dce3ec;
-    border-radius: 13px;
-}
-
-div[data-testid="stPopover"] button:hover {
-    border-color: #2583f7;
-    background: #f4f8ff;
-}
-
-div[role="radiogroup"] {
-    justify-content: center;
-    gap: 18px;
-}
-
-.footer {
-    text-align: center;
-    color: #98a2b3;
-    font-size: 0.82rem;
-    margin-top: 45px;
-}
-
-</style>
-""", unsafe_allow_html=True)
 
 
 def numero_br(valor, casas=2):
@@ -226,60 +43,266 @@ def numero_br(valor, casas=2):
 
 
 st.markdown("""
-<div class="topo">
-    <div class="logo">⚡</div>
-    <div class="nome-app">Previsão de Potência em Cargas de IA</div>
-</div>
+<style>
+
+.stApp {
+    background: #ffffff;
+    color: #0f172a;
+}
+
+.block-container {
+    max-width: 1080px;
+    padding-top: 1.4rem;
+    padding-bottom: 4rem;
+}
+
+header[data-testid="stHeader"] {
+    background: #ffffff;
+}
+
+[data-testid="stToolbar"] {
+    right: 1rem;
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e7edf5;
+    margin-bottom: 22px;
+}
+
+.app-logo {
+    color: #1677ff;
+    font-size: 1.65rem;
+}
+
+.app-name {
+    color: #0f172a;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.hero-title {
+    font-size: 2.35rem;
+    font-weight: 750;
+    letter-spacing: -0.035em;
+    text-align: center;
+    color: #0f172a;
+    margin-top: 28px;
+}
+
+.hero-subtitle {
+    max-width: 680px;
+    margin: 8px auto 32px auto;
+    text-align: center;
+    color: #64748b;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.section-title {
+    color: #0f172a;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 3px;
+}
+
+.section-text {
+    color: #64748b;
+    font-size: 0.92rem;
+    margin-bottom: 18px;
+}
+
+div[data-testid="stForm"] {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.025);
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] {
+    border-color: #e2e8f0;
+    border-radius: 16px;
+}
+
+div[data-testid="stMetric"] {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 20px;
+}
+
+div[data-testid="stMetricLabel"] {
+    color: #64748b;
+}
+
+div[data-testid="stMetricValue"] {
+    color: #0f172a;
+}
+
+.stButton > button,
+.stFormSubmitButton > button {
+    background: #1677ff;
+    color: #ffffff;
+    border: 0;
+    border-radius: 10px;
+    min-height: 48px;
+    font-weight: 650;
+    transition: 0.15s ease;
+}
+
+.stButton > button:hover,
+.stFormSubmitButton > button:hover {
+    background: #0868df;
+    color: #ffffff;
+    border: 0;
+}
+
+div[data-testid="stPopover"] > button {
+    background: #ffffff;
+    border: 1px solid #d8e1ec;
+    border-radius: 14px;
+    min-height: 76px;
+    font-size: 1.65rem;
+    color: #1677ff;
+}
+
+div[data-testid="stPopover"] > button:hover {
+    background: #f7faff;
+    border-color: #1677ff;
+    color: #1677ff;
+}
+
+.result-card {
+    background: #f7faff;
+    border: 1px solid #b9d6ff;
+    border-radius: 18px;
+    padding: 34px 20px;
+    text-align: center;
+    margin: 20px 0 16px 0;
+}
+
+.result-label {
+    color: #475569;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.result-value {
+    color: #0f172a;
+    font-size: 3.5rem;
+    font-weight: 780;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    margin-top: 8px;
+}
+
+.result-kw {
+    color: #64748b;
+    font-size: 1.55rem;
+    margin-top: 6px;
+}
+
+.result-context {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-top: 9px;
+}
+
+.icon-help {
+    text-align: center;
+    color: #64748b;
+    font-size: 0.87rem;
+    margin: 18px 0 9px 0;
+}
+
+.friendly-box {
+    background: #f8fbff;
+    border-left: 4px solid #1677ff;
+    border-radius: 8px;
+    padding: 16px 18px;
+    color: #475569;
+    margin-top: 18px;
+    line-height: 1.55;
+}
+
+.footer {
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.8rem;
+    margin-top: 50px;
+}
+
+</style>
 """, unsafe_allow_html=True)
 
-menu = st.radio(
-    "Navegação",
-    ["Previsão", "Sobre", "Metodologia"],
-    horizontal=True,
-    label_visibility="collapsed"
-)
+
+header_col, nav_col = st.columns([1.8, 1.2])
+
+with header_col:
+    st.markdown("""
+    <div class="app-header">
+        <span class="app-logo">⚡</span>
+        <span class="app-name">Previsão de Potência em IA</span>
+    </div>
+    """, unsafe_allow_html=True)
+
+with nav_col:
+    try:
+        menu = st.segmented_control(
+            "Navegação",
+            ["Previsão", "Sobre", "Metodologia"],
+            default="Previsão",
+            label_visibility="collapsed"
+        )
+    except AttributeError:
+        menu = st.radio(
+            "Navegação",
+            ["Previsão", "Sobre", "Metodologia"],
+            horizontal=True,
+            label_visibility="collapsed"
+        )
 
 
 if menu == "Sobre":
 
     st.markdown(
-        '<div class="titulo">Sobre o projeto</div>',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        """
-        <div class="subtitulo">
-        Uma aplicação de Machine Learning desenvolvida para estimar
-        a potência consumida por cargas de Inteligência Artificial.
-        </div>
-        """,
+        '<div class="hero-title">Sobre o projeto</div>',
         unsafe_allow_html=True
     )
 
     st.markdown("""
-    <div class="card">
-
-    ### Objetivo
-
-    A proposta é permitir que características de uma carga computacional
-    sejam informadas para que o modelo estime a potência total consumida
-    pelas GPUs.
-
-    ### Aplicação
-
-    A previsão pode auxiliar no planejamento energético,
-    dimensionamento de infraestrutura e análise de custos associados
-    à execução de cargas de Inteligência Artificial.
-
-    ### Projeto
-
-    Projeto Final de Machine Learning para Problemas Reais.
-
-    **Integrantes:** Diego e Isaque.
-
+    <div class="hero-subtitle">
+        Uma ferramenta desenvolvida para estimar a potência consumida
+        por cargas de Inteligência Artificial.
     </div>
     """, unsafe_allow_html=True)
+
+    with st.container(border=True):
+
+        st.markdown("### Objetivo")
+
+        st.write(
+            "O projeto utiliza Machine Learning para estimar a potência "
+            "total consumida pelas GPUs a partir das características "
+            "da carga computacional."
+        )
+
+        st.markdown("### Aplicação")
+
+        st.write(
+            "A estimativa pode auxiliar no planejamento energético, "
+            "dimensionamento de infraestrutura e análise de custos "
+            "relacionados à execução de cargas de IA."
+        )
+
+        st.markdown("### Equipe")
+
+        st.write("Diego e Isaque — SENAC")
 
     st.stop()
 
@@ -287,64 +310,56 @@ if menu == "Sobre":
 if menu == "Metodologia":
 
     st.markdown(
-        '<div class="titulo">Metodologia</div>',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        """
-        <div class="subtitulo">
-        Como os dados foram preparados e o modelo foi desenvolvido.
-        </div>
-        """,
+        '<div class="hero-title">Metodologia</div>',
         unsafe_allow_html=True
     )
 
     st.markdown("""
-    <div class="card">
-
-    ### Dados
-
-    O projeto utilizou um dataset público contendo medições de cargas
-    de Inteligência Artificial executadas em GPUs NVIDIA H100 e B200.
-
-    A base final utilizada no projeto possui aproximadamente
-    **1,44 milhão de registros**.
-
-    ### Modelagem
-
-    Foram comparados:
-
-    - baseline;
-    - Regressão Linear;
-    - Random Forest;
-    - Gradient Boosting.
-
-    O Random Forest apresentou o melhor desempenho e foi escolhido
-    como modelo principal.
-
-    ### Deploy
-
-    Para a aplicação web foi utilizada uma versão otimizada do
-    Random Forest, reduzindo o tamanho do modelo e mantendo desempenho
-    próximo ao modelo completo.
-
+    <div class="hero-subtitle">
+        Resumo das etapas utilizadas para construir e avaliar o modelo.
     </div>
     """, unsafe_allow_html=True)
 
-    c1, c2, c3 = st.columns(3)
+    with st.container(border=True):
 
-    c1.metric(
+        st.markdown("### Dataset")
+
+        st.write(
+            "Foram utilizadas medições de cargas de Inteligência Artificial "
+            "executadas em GPUs NVIDIA H100 e B200."
+        )
+
+        st.write(
+            "A base preparada para o projeto possui aproximadamente "
+            "**1,44 milhão de registros**."
+        )
+
+        st.markdown("### Modelos avaliados")
+
+        st.write(
+            "Baseline, Regressão Linear, Random Forest e Gradient Boosting."
+        )
+
+        st.markdown("### Modelo selecionado")
+
+        st.write(
+            "O Random Forest apresentou o melhor desempenho geral. "
+            "Uma versão otimizada foi utilizada na aplicação web."
+        )
+
+    m1, m2, m3 = st.columns(3)
+
+    m1.metric(
         "MAE do deploy",
         f"{numero_br(metricas['MAE'])} W"
     )
 
-    c2.metric(
+    m2.metric(
         "RMSE do deploy",
         f"{numero_br(metricas['RMSE'])} W"
     )
 
-    c3.metric(
+    m3.metric(
         "R² do deploy",
         f"{metricas['R2']:.4f}"
     )
@@ -355,23 +370,30 @@ if menu == "Metodologia":
 if st.session_state.tela == "entrada":
 
     st.markdown(
-        '<div class="titulo">Previsão de Potência em Cargas de IA</div>',
+        '<div class="hero-title">Previsão de Potência em Cargas de IA</div>',
         unsafe_allow_html=True
     )
 
     st.markdown("""
-    <div class="subtitulo">
-    Informe as características da carga computacional para estimar
-    a potência total consumida pelas GPUs.
+    <div class="hero-subtitle">
+        Informe as características da carga computacional.
+        O modelo utilizará esses parâmetros para estimar
+        a potência total das GPUs.
     </div>
     """, unsafe_allow_html=True)
 
-    with st.form("formulario"):
+    with st.form("form_previsao"):
 
-        st.markdown("### Configuração da carga")
+        st.markdown(
+            '<div class="section-title">Configuração da carga</div>',
+            unsafe_allow_html=True
+        )
 
-        st.caption(
-            "Preencha os parâmetros abaixo e clique em Calcular previsão."
+        st.markdown(
+            '<div class="section-text">'
+            'Preencha os parâmetros abaixo e clique em Calcular previsão.'
+            '</div>',
+            unsafe_allow_html=True
         )
 
         esquerda, direita = st.columns(2, gap="large")
@@ -482,18 +504,19 @@ if st.session_state.tela == "entrada":
                 step=1
             )
 
+        st.markdown("---")
         st.markdown("#### Simulação de operação")
 
-        operacao1, operacao2 = st.columns(2)
+        simulacao1, simulacao2 = st.columns(2)
 
-        horas = operacao1.number_input(
+        horas = simulacao1.number_input(
             "Horas de operação",
             min_value=1.0,
             value=1.0,
             step=1.0
         )
 
-        tarifa = operacao2.number_input(
+        tarifa = simulacao2.number_input(
             "Tarifa de energia (R$/kWh)",
             min_value=0.0,
             value=0.75,
@@ -579,53 +602,57 @@ else:
 
     resultado = st.session_state.resultado
 
+    if resultado is None:
+        st.session_state.tela = "entrada"
+        st.rerun()
+
     if st.button("← Voltar para parâmetros"):
         st.session_state.tela = "entrada"
         st.rerun()
 
     st.markdown(
-        '<div class="titulo">Resultado da estimativa</div>',
+        '<div class="hero-title">Resultado da estimativa</div>',
         unsafe_allow_html=True
     )
 
     st.markdown("""
-    <div class="subtitulo">
-    Estimativa calculada a partir dos parâmetros informados.
+    <div class="hero-subtitle">
+        Resultado calculado a partir das características
+        informadas para a carga de IA.
     </div>
     """, unsafe_allow_html=True)
 
+    resultado_html = (
+        '<div class="result-card">'
+        '<div class="result-label">POTÊNCIA TOTAL ESTIMADA DAS GPUs</div>'
+        f'<div class="result-value">{numero_br(resultado["potencia_w"])} W</div>'
+        f'<div class="result-kw">{numero_br(resultado["potencia_kw"])} kW</div>'
+        f'<div class="result-context">{resultado["gpu"]} • {resultado["workload"]}</div>'
+        '</div>'
+    )
+
     st.markdown(
-        f"""
-        <div class="resultado-principal">
-
-            <div class="resultado-label">
-                POTÊNCIA TOTAL ESTIMADA DAS GPUs
-            </div>
-
-            <div class="resultado-numero">
-                {numero_br(resultado["potencia_w"])} W
-            </div>
-
-            <div class="resultado-kw">
-                {numero_br(resultado["potencia_kw"])} kW
-            </div>
-
-        </div>
-        """,
+        resultado_html,
         unsafe_allow_html=True
     )
 
     st.markdown(
-        '<div class="ajuda">ⓘ Clique nos ícones para entender os parâmetros utilizados na previsão.</div>',
+        '<div class="icon-help">'
+        'ⓘ Clique nos ícones para ver os parâmetros utilizados na previsão.'
+        '</div>',
         unsafe_allow_html=True
     )
 
-    i1, i2, i3, i4 = st.columns(4)
+    icone1, icone2, icone3, icone4 = st.columns(4)
 
-    with i1:
-        with st.popover("🖥️", use_container_width=True):
+    with icone1:
 
-            st.markdown("### Uso da GPU")
+        with st.popover(
+            "🖥️",
+            use_container_width=True
+        ):
+
+            st.markdown("#### Uso da GPU")
 
             st.metric(
                 "Utilização",
@@ -633,18 +660,22 @@ else:
             )
 
             st.write(
-                "Indica quanto da capacidade de processamento da GPU "
-                "está sendo utilizada pela carga."
+                "Mostra quanto da capacidade de processamento "
+                "da GPU está sendo utilizada."
             )
 
             st.caption(
-                f'Modelo utilizado: {resultado["gpu"]}'
+                f'Modelo: {resultado["gpu"]}'
             )
 
-    with i2:
-        with st.popover("▦", use_container_width=True):
+    with icone2:
 
-            st.markdown("### Memória da GPU")
+        with st.popover(
+            "▦",
+            use_container_width=True
+        ):
+
+            st.markdown("#### Memória da GPU")
 
             st.metric(
                 "Memória utilizada",
@@ -652,19 +683,23 @@ else:
             )
 
             st.write(
-                "Representa a quantidade de memória da GPU ocupada "
-                "durante a execução da carga."
+                "Representa a quantidade de memória da GPU "
+                "ocupada pela carga."
             )
 
             st.caption(
-                f'Utilização da memória: '
+                f'Utilização: '
                 f'{resultado["gpu_mem_utilization"]:.1f}%'
             )
 
-    with i3:
-        with st.popover("⚙️", use_container_width=True):
+    with icone3:
 
-            st.markdown("### Uso da CPU")
+        with st.popover(
+            "⚙️",
+            use_container_width=True
+        ):
+
+            st.markdown("#### CPU")
 
             st.metric(
                 "Utilização",
@@ -672,35 +707,45 @@ else:
             )
 
             st.write(
-                "Mostra quanto do processador está sendo utilizado "
-                "durante a execução."
+                "Indica quanto do processador está sendo "
+                "utilizado durante a execução."
             )
 
             st.caption(
-                f'Frequência: {numero_br(resultado["cpu_freq"], 0)} MHz'
+                f'Frequência: '
+                f'{numero_br(resultado["cpu_freq"], 0)} MHz'
             )
 
-    with i4:
-        with st.popover("🌡️", use_container_width=True):
+    with icone4:
 
-            st.markdown("### Temperatura da GPU")
+        with st.popover(
+            "🌡️",
+            use_container_width=True
+        ):
+
+            st.markdown("#### Temperatura da GPU")
 
             st.metric(
-                "Temperatura média",
+                "Temperatura",
                 f'{resultado["gpu_temp"]:.1f} °C'
             )
 
             st.write(
-                "Temperatura média observada na GPU durante "
-                "a execução da carga."
+                "Temperatura média da GPU considerada "
+                "durante a previsão."
             )
 
-            st.caption(
-                f'Workload: {resultado["workload"]}'
-            )
+    st.markdown("<br>", unsafe_allow_html=True)
 
     st.markdown(
-        '<div class="secao">Estimativa de operação</div>',
+        '<div class="section-title">Estimativa de operação</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        '<div class="section-text">'
+        'Simulação calculada a partir da potência prevista.'
+        '</div>',
         unsafe_allow_html=True
     )
 
@@ -708,66 +753,70 @@ else:
 
     energia_col.metric(
         "Energia estimada",
-        f'{numero_br(resultado["energia"])} kWh',
-        f'em {numero_br(resultado["horas"], 0)} hora(s)',
-        delta_color="off"
+        f'{numero_br(resultado["energia"])} kWh'
     )
 
     custo_col.metric(
         "Custo estimado",
-        f'R$ {numero_br(resultado["custo"])}',
-        f'R$ {numero_br(resultado["tarifa"])} / kWh',
-        delta_color="off"
+        f'R$ {numero_br(resultado["custo"])}'
     )
 
-    st.markdown("""
-    <div class="info-box">
-    A energia e o custo são estimativas calculadas a partir da potência
-    prevista. O cálculo considera que essa potência permanece constante
-    durante o período informado.
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(
+        (
+            '<div class="friendly-box">'
+            'A energia e o custo são estimativas calculadas a partir '
+            'da potência prevista, considerando que essa potência '
+            f'permaneça constante durante {numero_br(resultado["horas"], 0)} '
+            'hora(s). '
+            'O modelo prevê a potência das GPUs e não o consumo elétrico '
+            'total do servidor ou do data center.'
+            '</div>'
+        ),
+        unsafe_allow_html=True
+    )
+
+    st.markdown("<br>", unsafe_allow_html=True)
 
     st.markdown(
-        '<div class="secao">Sobre a precisão do modelo</div>',
+        '<div class="section-title">Sobre a precisão do modelo</div>',
         unsafe_allow_html=True
     )
 
     st.write(
-        f'O modelo de deploy apresentou **R² de '
-        f'{metricas["R2"]:.4f}**, indicando que conseguiu explicar '
+        f'O modelo utilizado no deploy apresentou **R² de '
+        f'{metricas["R2"]:.4f}**. Isso significa que ele explicou '
         f'aproximadamente **{metricas["R2"] * 100:.1f}%** da variação '
         f'da potência no conjunto de teste.'
     )
 
     with st.expander("Ver métricas técnicas"):
 
-        m1, m2, m3 = st.columns(3)
+        metrica1, metrica2, metrica3 = st.columns(3)
 
-        m1.metric(
+        metrica1.metric(
             "MAE",
             f'{numero_br(metricas["MAE"])} W'
         )
 
-        m2.metric(
+        metrica2.metric(
             "RMSE",
             f'{numero_br(metricas["RMSE"])} W'
         )
 
-        m3.metric(
+        metrica3.metric(
             "R²",
             f'{metricas["R2"]:.4f}'
         )
 
         st.caption(
-            "MAE representa o erro absoluto médio. "
-            "RMSE dá maior peso a erros maiores. "
-            "R² indica quanto da variação dos dados o modelo consegue explicar."
+            "MAE: erro absoluto médio. "
+            "RMSE: penaliza mais os erros maiores. "
+            "R²: proporção da variação da potência explicada pelo modelo."
         )
 
 
 st.markdown("""
 <div class="footer">
-Projeto Final de Machine Learning • Diego e Isaque • SENAC
+    Projeto Final de Machine Learning • Diego e Isaque • SENAC
 </div>
 """, unsafe_allow_html=True)
