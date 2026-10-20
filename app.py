@@ -47,7 +47,7 @@ st.html("""
 
 .block-container {
     max-width: 1080px;
-    padding-top: 1.2rem;
+    padding-top: 4.5rem;
     padding-bottom: 4rem;
 }
 
@@ -55,33 +55,53 @@ header[data-testid="stHeader"] {
     background: rgba(255,255,255,0.96);
 }
 
+
 /* CABEÇALHO */
 
 .cabecalho {
     display: flex;
     align-items: center;
-    min-height: 48px;
+    min-height: 52px;
 }
 
 .marca {
     display: flex;
     align-items: center;
     gap: 10px;
-    color: #0f172a;
-    font-size: 1.05rem;
+    color: #0f172a !important;
+    font-size: 1.08rem;
     font-weight: 700;
 }
 
+.marca span {
+    color: #0f172a !important;
+}
+
 .marca-icone {
-    font-size: 1.6rem;
-    color: #1677ff;
+    font-size: 1.65rem;
+    color: #1677ff !important;
 }
 
 .linha-cabecalho {
     height: 1px;
-    background: #e5eaf1;
-    margin-top: 10px;
+    background: #dfe5ec;
+    margin-top: 8px;
     margin-bottom: 26px;
+}
+
+
+/* NAVEGAÇÃO */
+
+div[data-testid="stSegmentedControl"] button {
+    color: #475569 !important;
+    background: #ffffff !important;
+    border-color: #e2e8f0 !important;
+}
+
+div[data-testid="stSegmentedControl"] button[aria-pressed="true"] {
+    color: #1677ff !important;
+    background: #eef6ff !important;
+    border-color: #c7ddff !important;
 }
 
 
@@ -109,7 +129,7 @@ header[data-testid="stHeader"] {
     color: #0f172a;
     font-size: 1.25rem;
     font-weight: 700;
-    margin-top: 24px;
+    margin-top: 28px;
     margin-bottom: 3px;
 }
 
@@ -120,7 +140,7 @@ header[data-testid="stHeader"] {
 }
 
 
-/* FORM */
+/* FORMULÁRIO */
 
 div[data-testid="stForm"] {
     background: #ffffff;
@@ -133,7 +153,7 @@ div[data-testid="stForm"] {
 .stButton > button,
 .stFormSubmitButton > button {
     background: #1677ff;
-    color: white;
+    color: #ffffff;
     border: none;
     border-radius: 9px;
     min-height: 46px;
@@ -143,7 +163,7 @@ div[data-testid="stForm"] {
 .stButton > button:hover,
 .stFormSubmitButton > button:hover {
     background: #0868df;
-    color: white;
+    color: #ffffff;
     border: none;
 }
 
@@ -154,7 +174,7 @@ div[data-testid="stForm"] {
     background: #f7faff;
     border: 1px solid #a8ceff;
     border-radius: 16px;
-    padding: 32px 24px;
+    padding: 34px 24px;
     text-align: center;
     margin-top: 20px;
     margin-bottom: 18px;
@@ -189,36 +209,37 @@ div[data-testid="stForm"] {
 }
 
 
-/* ÍCONES */
+/* ÍCONES DOS PARÂMETROS */
 
 .ajuda-icones {
     text-align: center;
     color: #64748b;
     font-size: 0.86rem;
-    margin: 12px 0 8px 0;
+    margin: 14px 0 10px 0;
 }
 
 div[data-testid="stPopover"] > button {
-    min-height: 58px !important;
-    height: 58px !important;
+    min-height: 56px !important;
+    height: 56px !important;
     background: #ffffff !important;
     border: 1px solid #d7e0eb !important;
-    border-radius: 11px !important;
+    border-radius: 10px !important;
     box-shadow: none !important;
     color: #1e3a5f !important;
-    font-size: 0.94rem !important;
+    font-size: 0.92rem !important;
     font-weight: 600 !important;
-    padding: 0 12px !important;
+    padding: 0 10px !important;
 }
 
 div[data-testid="stPopover"] > button:hover {
     background: #f5f9ff !important;
     border-color: #1677ff !important;
+    color: #1677ff !important;
 }
 
 div[data-testid="stPopover"] svg {
-    width: 15px !important;
-    height: 15px !important;
+    width: 14px !important;
+    height: 14px !important;
 }
 
 
@@ -588,7 +609,6 @@ if st.session_state.tela == "entrada":
         }
 
         st.session_state.tela = "resultado"
-
         st.rerun()
 
 
